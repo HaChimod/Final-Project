@@ -51,7 +51,7 @@ function TopBar({ user, handleLogout, onPhotoUpload }) {
       const formData = new FormData();
       formData.append("photo", file);
 
-      const response = await fetch("http://localhost:8081/photos/new", {
+      const response = await fetch("https://pdyj5t-8081.csb.app/photos/new", {
         method: "POST",
         credentials: "include",
         body: formData,

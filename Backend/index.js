@@ -16,7 +16,7 @@ const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://pdyj5t-3000.csb.app",
     credentials: true,
   })
 );
@@ -32,7 +32,7 @@ app.use(
 );
 
 app.use("/admin", adminRoute);
-app.use(requireLogin);
+//app.use(requireLogin);
 app.use("/api/user", UserRouter);
 app.use("/api/photo", PhotoRouter);
 app.use("/photos", UploadPhotoRouter);

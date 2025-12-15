@@ -4,7 +4,7 @@ const User = require("../db/userModel");
 
 router.post("/login", async (req, res) => {
   const { login_name, password } = req.body;
-
+  console.log("HIT /login");
   if (!login_name || !password) {
     return res.status(400).json({ message: "Missing login_name or password" });
   }

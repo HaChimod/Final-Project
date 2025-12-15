@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Typography } from "@mui/material";
 
 function LoginRegister({ setUser }) {
-  const [mode, setMode] = useState("login"); // "login" | "register"
+  const [mode, setMode] = useState("login");
   const [creds, setCreds] = useState({ login_name: "", password: "" });
   const [loginError, setLoginError] = useState("");
 
@@ -22,7 +22,7 @@ function LoginRegister({ setUser }) {
   // -------------------- LOGIN HANDLER --------------------
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:8081/admin/login", {
+      const res = await fetch("https://pdyj5t-8081.csb.app/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -54,7 +54,7 @@ function LoginRegister({ setUser }) {
     }
 
     try {
-      const res = await fetch("http://localhost:8081/admin/user", {
+      const res = await fetch("https://pdyj5t-8081.csb.app/admin/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reg),

@@ -9,7 +9,6 @@ function UserPhotos({ newPhotoFromTopBar }) {
   const [loading, setLoading] = useState(true);
   const [commentInput, setCommentInput] = useState({});
 
-  // Hàm sắp xếp giảm dần theo date_time
   const sortByDateDesc = (arr) => {
     return arr.sort((a, b) => new Date(b.date_time) - new Date(a.date_time));
   };
