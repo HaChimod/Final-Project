@@ -9,12 +9,10 @@ function UserPhotos({ newPhotoFromTopBar }) {
   const [loading, setLoading] = useState(true);
   const [commentInput, setCommentInput] = useState({});
 
-  // Hàm sắp xếp giảm dần theo date_time
   const sortByDateDesc = (arr) => {
     return arr.sort((a, b) => new Date(b.date_time) - new Date(a.date_time));
   };
 
-  // Fetch photos khi vào trang hoặc userId thay đổi
   useEffect(() => {
     async function fetchPhotos() {
       try {
@@ -71,7 +69,7 @@ function UserPhotos({ newPhotoFromTopBar }) {
       {photos.map((photo) => (
         <Box key={photo._id} mb={3}>
           <img
-            src={`http://localhost:8081/images/${photo.file_name}`}
+            src={`https://lkmrjm-8081.csb.app/images/${photo.file_name}`}
             alt={photo.file_name}
             style={{ maxWidth: "100%", borderRadius: "5px" }}
           />

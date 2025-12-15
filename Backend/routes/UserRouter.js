@@ -3,6 +3,7 @@ const router = express.Router();
 const requireLogin = require("./requireLogin");
 const User = require("../db/userModel");
 router.get("/list", async (req, res) => {
+  console.log("HIT /api/user/list");
   try {
     const users = await User.find({})
       .select("_id first_name last_name")

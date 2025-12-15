@@ -7,8 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import fetchModel from "../../lib/fetchModelData"; // dùng fetchModel chuẩn
-
+import fetchModel from "../../lib/fetchModelData";
 /**
  * UserList component
  * Props:

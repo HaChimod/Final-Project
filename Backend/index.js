@@ -16,7 +16,7 @@ const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://lkmrjm-3000.csb.app/",
     credentials: true,
   })
 );

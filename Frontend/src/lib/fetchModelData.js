@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8081";
+const BASE_URL = "https://lkmrjm-8081.csb.app";
 
 /**
  * fetchModel - Fetch a model from the web server, including credentials (cookie/session)

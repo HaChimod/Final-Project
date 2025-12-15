@@ -23,7 +23,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// POST /api/photo/new
 router.post("/new", upload.single("photo"), async (req, res) => {
   try {
     if (!req.session || !req.session.userId) {
