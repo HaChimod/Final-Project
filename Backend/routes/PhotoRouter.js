@@ -57,7 +57,8 @@ router.get("/photosOfUser/:id", async (req, res) => {
 
 router.post("/commentsOfPhoto/:photo_id", async (req, res) => {
   const { photo_id } = req.params;
-  const { comment } = req.body;
+  // const { comment } = req.body;
+  const { comment, user_id } = req.body;
   if (!require("mongoose").Types.ObjectId.isValid(photo_id)) {
     return res.status(400).json({ message: "Invalid photo ID" });
   }
@@ -73,6 +74,7 @@ router.post("/commentsOfPhoto/:photo_id", async (req, res) => {
     photo.comments.push({
       comment,
       user_id: req.session.userId,
+      // user_id,
       date_time: new Date(),
     });
 

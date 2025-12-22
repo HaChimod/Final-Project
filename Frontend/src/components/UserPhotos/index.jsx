@@ -48,7 +48,9 @@ function UserPhotos({ newPhotoFromTopBar }) {
       await fetchModel(`/api/photo/commentsOfPhoto/${photoId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment: commentText }),
+        body: JSON.stringify({ comment: commentText,
+          // user_id: user._id
+         }),
       });
 
       setCommentInput((prev) => ({ ...prev, [photoId]: "" }));
@@ -70,7 +72,7 @@ function UserPhotos({ newPhotoFromTopBar }) {
       {photos.map((photo) => (
         <Box key={photo._id} mb={3}>
           <img
-            src={`http://localhost:8081/images/${photo.file_name}`}
+            src={`https://pdyj5t-8081.csb.app/images/${photo.file_name}`}
             alt={photo.file_name}
             style={{ maxWidth: "100%", borderRadius: "5px" }}
           />
