@@ -10,8 +10,7 @@ const UserRouter = require("./routes/UserRouter");
 const PhotoRouter = require("./routes/PhotoRouter");
 const adminRoute = require("./routes/admin");
 const UploadPhotoRouter = require("./routes/UploadPhotoRouter");
-// const CommentRouter = require("./routes/CommentRouter");
-// app.use(cors());
+
 app.set("trust proxy", 1);
 const path = require("path");
 app.use("/images", express.static(path.join(__dirname, "images")));
@@ -31,13 +30,12 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true,        
-      sameSite: "none",    
+      secure: true,
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
-
 
 app.use("/admin", adminRoute);
 app.use(requireLogin);

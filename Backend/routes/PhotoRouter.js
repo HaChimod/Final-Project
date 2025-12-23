@@ -86,5 +86,65 @@ router.post("/commentsOfPhoto/:photo_id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.get("/stats/commentOfUser/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const userPhotos = await Photo.find({ user_id: userId });
+    const totalPhotos = userPhotos.length;
+    let totalComments = 0;
+    userPhotos.forEach((photo) => {
+      (photo.comments || []).forEach((c) => {
+        if (c.user_id && c.user_id.toString() === userId) {
+          totalComments++;
+        }
+      });
+    });
+
+    res.json({
+      userId,
+      totalPhotos,
+      totalComments,
+    });
+  } catch (err) {
+    console.error("Error in /stats/commentOfUser:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+router.put("/comments/:photo_id/:comment_id", async (req, res) => {
+  const { photo_id, comment_id } = req.params;
+  const { comment } = req.body;
+
+  const photo = await Photo.findById(photo_id);
+  if (!photo) return res.status(404).json({ message: "Photo not found" });
+
+  const c = photo.comments.id(comment_id);
+  if (!c) return res.status(404).json({ message: "Comment not found" });
+
+  if (c.user_id.toString() !== req.session.userId)
+    return res.status(403).json({ message: "Not allowed" });
+
+  c.comment = comment;
+  await photo.save();
+  res.json(c);
+});
+router.delete("/comments/:photo_id/:comment_id", async (req, res) => {
+  try {
+    const { photo_id, comment_id } = req.params;
+    const photo = await Photo.findById(photo_id);
+    if (!photo) return res.status(404).json({ message: "Photo not found" });
+    const comment = photo.comments.id(comment_id);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+    if (comment.user_id.toString() !== req.session.userId)
+      return res.status(403).json({ message: "Not allowed" });
+    comment.remove = undefined; 
+    photo.comments = photo.comments.filter(c => c._id.toString() !== comment_id);
+    await photo.save();
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

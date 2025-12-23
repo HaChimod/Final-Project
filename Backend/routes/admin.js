@@ -31,7 +31,7 @@ router.post("/login", async (req, res) => {
 });
 router.get("/me", (req, res) => {
   if (req.session.userId) {
-    res.json({ login_name: req.session.login_name });
+    res.json({ _id: req.session.userId });
   } else {
     res.status(401).json({ error: "Not logged in" });
   }
