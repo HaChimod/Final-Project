@@ -146,5 +146,23 @@ router.delete("/comments/:photo_id/:comment_id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
+router.post("/photos/:photo_id/like", async (req, res) => {
+  try {
+    const { photo_id } = req.params;
+    const userId = req.session.userId; 
+    const photo = await Photo.findById(photo_id);
+    if (!photo) return res.status(404).json({ message: "Photo not found" });
+    const index = photo.likes.findIndex((id) => id.toString() === userId);
+    if (index === -1) {
+      photo.likes.push(userId);
+    } else {
+      photo.likes.splice(index, 1);
+    }
+    await photo.save();
+    res.json({ likesCount: photo.likes.length, liked: index === -1 });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = router;
