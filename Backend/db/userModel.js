@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   location: { type: String },
   description: { type: String },
   occupation: { type: String },
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "Users", default: [] }],
+  friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Users", default: [] }],
 });
 
 module.exports = mongoose.model.Users || mongoose.model("Users", userSchema);

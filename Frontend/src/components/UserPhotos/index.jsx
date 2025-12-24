@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Box, TextField, Button } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import fetchModel from "../../lib/fetchModelData";
 
 function UserPhotos({ newPhotoFromTopBar }) {
@@ -8,10 +8,15 @@ function UserPhotos({ newPhotoFromTopBar }) {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [commentInput, setCommentInput] = useState({});
-  const [editInput, setEditInput] = useState({}); 
-
-  const sortByDateDesc = (arr) =>
-    arr.sort((a, b) => new Date(b.date_time) - new Date(a.date_time));
+  const [editInput, setEditInput] = useState({});
+  const location = useLocation();
+  const highlightId = new URLSearchParams(location.search).get("highlight");
+  const sortByDateDesc = (arr) => {
+    if (!Array.isArray(arr)) return [];
+    return [...arr].sort(
+      (a, b) => new Date(b.date_time) - new Date(a.date_time)
+    );
+  };
 
   useEffect(() => {
     async function fetchPhotos() {
@@ -70,7 +75,27 @@ function UserPhotos({ newPhotoFromTopBar }) {
     const data = await fetchModel(`/api/photo/photosOfUser/${userId}`);
     setPhotos(sortByDateDesc(data));
   };
-
+  const toggleLike = async (photoId) => {
+    try {
+      const res = await fetchModel(`/api/photo/photos/${photoId}/like`, {
+        method: "POST",
+        credentials: "include",
+      });
+      setPhotos((prev) =>
+        prev.map((p) =>
+          p._id === photoId
+            ? {
+                ...p,
+                likesCount: res.likesCount,
+                liked: res.liked,
+              }
+            : p
+        )
+      );
+    } catch (err) {
+      alert(err.message || "Error");
+    }
+  };
   if (loading) return <Typography>Loading photos...</Typography>;
   if (!photos.length) return <Typography>No photos yet.</Typography>;
 
@@ -84,9 +109,26 @@ function UserPhotos({ newPhotoFromTopBar }) {
             style={{ maxWidth: "100%", borderRadius: "5px" }}
           />
           <p>{new Date(photo.date_time).toLocaleString()}</p>
+          <Box display="flex" alignItems="center" mt={1}>
+            {/* <Button
+          variant={photo.liked ? "contained" : "outlined"}
+          onClick={() => toggleLike(photo._id)}
+          >
+            {photo.likesCount || 0} người Like
+          </Button> */}
+          </Box>
 
           {photo.comments.map((c) => (
-            <Box key={c._id} mb={1}>
+            <Box
+              key={c._id}
+              mb={1}
+              sx={{
+                backgroundColor:
+                  c._id === highlightId ? "yellow" : "transparent",
+                borderRadius: 1,
+                p: 0.5,
+              }}
+            >
               <Typography>
                 {c.user?.first_name || "Unknown"} {c.user?.last_name || "User"}:{" "}
                 {c.comment}
@@ -130,10 +172,17 @@ function UserPhotos({ newPhotoFromTopBar }) {
               fullWidth
               value={commentInput[photo._id] || ""}
               onChange={(e) =>
-                setCommentInput((prev) => ({ ...prev, [photo._id]: e.target.value }))
+                setCommentInput((prev) => ({
+                  ...prev,
+                  [photo._id]: e.target.value,
+                }))
               }
             />
-            <Button variant="contained" sx={{ ml: 1 }} onClick={() => addComment(photo._id)}>
+            <Button
+              variant="contained"
+              sx={{ ml: 1 }}
+              onClick={() => addComment(photo._id)}
+            >
               Post
             </Button>
           </Box>

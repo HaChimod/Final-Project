@@ -4,6 +4,51 @@ const router = express.Router();
 const User = require("../db/userModel");
 const Photo = require("../db/photoModel");
 
+router.get("/comment/search", async (req, res) => {
+  const { q } = req.query;
+  if (!q || !q.trim()) return res.json([]);
+
+  try {
+    const photos = await Photo.find({
+      "comments.comment": { $regex: q, $options: "i" },
+    }).lean();
+
+    const results = [];
+
+    for (const photo of photos) {
+      // Lấy thông tin chủ photo bên trong loop
+      const photoOwner = await User.findById(photo.user_id)
+        .select("_id first_name last_name")
+        .lean();
+
+      for (const c of photo.comments) {
+        if (c.comment.toLowerCase().includes(q.toLowerCase())) {
+          const user = await User.findById(c.user_id)
+            .select("_id first_name last_name")
+            .lean();
+
+          results.push({
+            _id: c._id,
+            comment: c.comment,
+            photo_id: photo._id,
+            photo_owner: photoOwner || {
+              _id: null,
+              first_name: "Unknown",
+              last_name: "User",
+            },
+            user,
+            date_time: c.date_time,
+          });
+        }
+      }
+    }
+
+    res.json(results);
+  } catch (err) {
+    console.error("Search comment error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 router.get("/photosOfUser/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -54,7 +99,44 @@ router.get("/photosOfUser/:id", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+router.get("/photoWithComments/:photo_id", async (req, res) => {
+  const { photo_id } = req.params;
 
+  if (!mongoose.Types.ObjectId.isValid(photo_id)) {
+    return res.status(400).json({ message: "Invalid photo ID" });
+  }
+
+  try {
+    const photo = await Photo.findById(photo_id).lean();
+    if (!photo) return res.status(404).json({ message: "Photo not found" });
+
+    const commentsWithUser = [];
+    for (const c of photo.comments || []) {
+      const user = await User.findById(c.user_id)
+        .select("_id first_name last_name")
+        .lean();
+      commentsWithUser.push({
+        _id: c._id,
+        comment: c.comment,
+        date_time: c.date_time,
+        user: user || { _id: null, first_name: "Unknown", last_name: "User" },
+      });
+    }
+
+    res.json({
+      _id: photo._id,
+      user_id: photo.user_id,
+      file_name: photo.file_name,
+      date_time: photo.date_time,
+      comments: commentsWithUser,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+module.exports = router;
 router.post("/commentsOfPhoto/:photo_id", async (req, res) => {
   const { photo_id } = req.params;
   // const { comment } = req.body;
@@ -137,8 +219,10 @@ router.delete("/comments/:photo_id/:comment_id", async (req, res) => {
     if (!comment) return res.status(404).json({ message: "Comment not found" });
     if (comment.user_id.toString() !== req.session.userId)
       return res.status(403).json({ message: "Not allowed" });
-    comment.remove = undefined; 
-    photo.comments = photo.comments.filter(c => c._id.toString() !== comment_id);
+    comment.remove = undefined;
+    photo.comments = photo.comments.filter(
+      (c) => c._id.toString() !== comment_id
+    );
     await photo.save();
     res.json({ message: "Deleted" });
   } catch (err) {
@@ -149,7 +233,7 @@ router.delete("/comments/:photo_id/:comment_id", async (req, res) => {
 router.post("/photos/:photo_id/like", async (req, res) => {
   try {
     const { photo_id } = req.params;
-    const userId = req.session.userId; 
+    const userId = req.session.userId;
     const photo = await Photo.findById(photo_id);
     if (!photo) return res.status(404).json({ message: "Photo not found" });
     const index = photo.likes.findIndex((id) => id.toString() === userId);

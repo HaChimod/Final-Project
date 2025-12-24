@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import fetchModel from "../../lib/fetchModelData";
-
+import Search from "../Search";
 function TopBar({ user, handleLogout, onPhotoUpload }) {
   const [contextText, setContextText] = useState("");
   const location = useLocation();
@@ -81,61 +81,68 @@ function TopBar({ user, handleLogout, onPhotoUpload }) {
   };
 
   return (
-    <AppBar className="topbar-appBar" position="absolute">
-      <Toolbar>
-        <Typography variant="h5" color="inherit" style={{ flex: 1 }}>
-          Phạm Tiến Phát
+<AppBar className="topbar-appBar" position="absolute">
+  <Toolbar>
+    <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
+      Phạm Tiến Phát
+    </Typography>
+
+    <Box sx={{ mr: 2 }}>
+      <Typography variant="h6" color="inherit">
+        {contextText}
+      </Typography>
+    </Box>
+
+    {/* {user && (
+      <Box sx={{ mr: 2 }}>
+        <Search type="comment" />
+      </Box>
+    )} */}
+
+    {!user ? (
+      <Typography variant="h6" color="inherit">
+        Please Login
+      </Typography>
+    ) : (
+      <>
+        <Typography variant="h6" sx={{ mr: 2 }}>
+          Hi {user.first_name}
         </Typography>
 
-        <Box sx={{ marginRight: "20px" }}>
-          <Typography variant="h6" color="inherit">
-            {contextText}
-          </Typography>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Button
+            color="inherit"
+            variant="outlined"
+            size="small"
+            sx={{ color: "white", borderColor: "white" }}
+            onClick={handleUploadClick}
+          >
+            Add Photo
+          </Button>
+
+          <Button
+            color="inherit"
+            variant="outlined"
+            size="small"
+            onClick={handleLogout}
+            sx={{ color: "white", borderColor: "white" }}
+          >
+            Logout
+          </Button>
         </Box>
 
-        {!user ? (
-          <Typography variant="h6" color="inherit">
-            Please Login
-          </Typography>
-        ) : (
-          <>
-            <Typography variant="h6" sx={{ marginRight: "20px" }}>
-              Hi {user.first_name}
-            </Typography>
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileSelected}
+        />
+      </>
+    )}
+  </Toolbar>
+</AppBar>
 
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-              <Button
-                color="inherit"
-                variant="outlined"
-                size="small"
-                sx={{ color: "white", borderColor: "white" }}
-                onClick={handleUploadClick}
-              >
-                Add Photo
-              </Button>
-
-              <Button
-                color="inherit"
-                variant="outlined"
-                size="small"
-                onClick={handleLogout}
-                sx={{ color: "white", borderColor: "white" }}
-              >
-                Logout
-              </Button>
-            </Box>
-
-            <input
-              type="file"
-              accept="image/*"
-              ref={fileInputRef}
-              style={{ display: "none" }}
-              onChange={handleFileSelected}
-            />
-          </>
-        )}
-      </Toolbar>
-    </AppBar>
   );
 }
 
