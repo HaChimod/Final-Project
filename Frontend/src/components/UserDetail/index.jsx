@@ -57,7 +57,21 @@ function UserDetail() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const deleteUser = async () => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
 
+    const res = await fetchModel(`/api/user/${user._id}`, {
+      method: "DELETE",
+    });
+
+    if (res && res.message) {
+      alert(res.message);
+      // Chuyển về danh sách users hoặc trang khác
+      window.location.href = "/users";
+    } else {
+      alert("Delete failed");
+    }
+  };
   const handleSave = async () => {
     const updated = await fetchModel("/api/user/edit/me", {
       method: "PUT",
@@ -120,7 +134,18 @@ function UserDetail() {
       <Typography variant="body1" sx={{ mt: 3 }}>
         <Link to={`/photos/${user._id}`}>View Photos</Link>
       </Typography>
-      {/* {!isMe && (
+      {/* {isMe && (
+        <Button
+          variant="outlined"
+          color="error"
+          sx={{ mt: 2, ml: 1 }}
+          onClick={deleteUser}
+        >
+          Delete Account
+        </Button>
+      )}
+
+      {!isMe && (
   <>
     {!isFriend && !requested && (
       <Button variant="contained" sx={{ mt: 2 }} onClick={sendRequest}>

@@ -153,14 +153,14 @@ function UserPhotos({ newPhotoFromTopBar }) {
               </Button> */}
 
               {/* Delete comment */}
-              <Button
+              {/* <Button
                 variant="contained"
                 size="small"
                 sx={{ ml: 1 }}
                 onClick={() => deleteComment(photo._id, c._id)}
               >
                 Delete
-              </Button>
+              </Button> */}
             </Box>
           ))}
 
