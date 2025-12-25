@@ -49,10 +49,7 @@ function UserList({ user }) {
           <React.Fragment key={u._id}>
             <ListItemButton component={Link} to={`/users/${u._id}`}>
               <ListItemText primary={`${u.first_name} ${u.last_name}`} />
-              <Box display="flex" gap={1}>
-                {/* <Chip label={u.photoCount} size="small" color="success" />
-                <Chip label={u.commentCount} size="small" color="error" /> */}
-              </Box>
+              <Box display="flex" gap={1}></Box>
             </ListItemButton>
             <Divider />
           </React.Fragment>

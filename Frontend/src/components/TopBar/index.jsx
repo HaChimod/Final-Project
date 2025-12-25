@@ -63,14 +63,11 @@ function TopBar({ user, handleLogout, onPhotoUpload }) {
       }
 
       alert("Photo uploaded!");
-
-      // --- thêm 1 dòng fetch lại ảnh của user hiện tại ---
       const userId = location.pathname.split("/")[2];
       if (userId) {
         const updatedPhotos = await fetchModel(
           `/api/photo/photosOfUser/${userId}`
         );
-        // gọi callback onPhotoUpload nếu có
         if (onPhotoUpload)
           updatedPhotos.forEach((photo) => onPhotoUpload(photo));
       }
@@ -92,13 +89,11 @@ function TopBar({ user, handleLogout, onPhotoUpload }) {
             {contextText}
           </Typography>
         </Box>
-
-        {/* {user && (
-      <Box sx={{ mr: 2 }}>
-        <Search type="comment" />
-      </Box>
-    )} */}
-
+        {user && (
+          <Box sx={{ mr: 2 }}>
+            <Search />
+          </Box>
+        )}
         {!user ? (
           <Typography variant="h6" color="inherit">
             Please Login
@@ -130,7 +125,6 @@ function TopBar({ user, handleLogout, onPhotoUpload }) {
                 Logout
               </Button>
             </Box>
-
             <input
               type="file"
               accept="image/*"
