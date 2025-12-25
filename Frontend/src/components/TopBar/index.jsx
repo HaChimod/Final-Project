@@ -81,68 +81,67 @@ function TopBar({ user, handleLogout, onPhotoUpload }) {
   };
 
   return (
-<AppBar className="topbar-appBar" position="absolute">
-  <Toolbar>
-    <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
-      Phạm Tiến Phát
-    </Typography>
+    <AppBar className="topbar-appBar" position="absolute">
+      <Toolbar>
+        <Typography variant="h5" color="inherit" sx={{ flexGrow: 1 }}>
+          Phạm Tiến Phát
+        </Typography>
 
-    <Box sx={{ mr: 2 }}>
-      <Typography variant="h6" color="inherit">
-        {contextText}
-      </Typography>
-    </Box>
+        <Box sx={{ mr: 2 }}>
+          <Typography variant="h6" color="inherit">
+            {contextText}
+          </Typography>
+        </Box>
 
-    {/* {user && (
+        {/* {user && (
       <Box sx={{ mr: 2 }}>
         <Search type="comment" />
       </Box>
     )} */}
 
-    {!user ? (
-      <Typography variant="h6" color="inherit">
-        Please Login
-      </Typography>
-    ) : (
-      <>
-        <Typography variant="h6" sx={{ mr: 2 }}>
-          Hi {user.first_name}
-        </Typography>
+        {!user ? (
+          <Typography variant="h6" color="inherit">
+            Please Login
+          </Typography>
+        ) : (
+          <>
+            <Typography variant="h6" sx={{ mr: 2 }}>
+              Hi {user.first_name}
+            </Typography>
 
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Button
-            color="inherit"
-            variant="outlined"
-            size="small"
-            sx={{ color: "white", borderColor: "white" }}
-            onClick={handleUploadClick}
-          >
-            Add Photo
-          </Button>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+              <Button
+                color="inherit"
+                variant="outlined"
+                size="small"
+                sx={{ color: "white", borderColor: "white" }}
+                onClick={handleUploadClick}
+              >
+                Add Photo
+              </Button>
 
-          <Button
-            color="inherit"
-            variant="outlined"
-            size="small"
-            onClick={handleLogout}
-            sx={{ color: "white", borderColor: "white" }}
-          >
-            Logout
-          </Button>
-        </Box>
+              <Button
+                color="inherit"
+                variant="outlined"
+                size="small"
+                onClick={handleLogout}
+                sx={{ color: "white", borderColor: "white" }}
+              >
+                Logout
+              </Button>
+            </Box>
 
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={handleFileSelected}
-        />
-      </>
-    )}
-  </Toolbar>
-</AppBar>
-
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileSelected}
+            />
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 }
 

@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Typography,
-  Button,
-  TextField,
-  Box,
-} from "@mui/material";
+import { Typography, Button, TextField, Box } from "@mui/material";
 import { useParams, Link } from "react-router-dom";
 import fetchModel from "../../lib/fetchModelData";
 
@@ -18,10 +13,10 @@ function UserDetail() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [friends, setFriends] = useState([]); 
-  const [requests, setRequests] = useState([]); 
-  const [isFriend, setIsFriend] = useState(false); 
-  const [requested, setRequested] = useState(false); 
+  const [friends, setFriends] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [isFriend, setIsFriend] = useState(false);
+  const [requested, setRequested] = useState(false);
   useEffect(() => {
     async function loadUser() {
       try {
@@ -43,19 +38,17 @@ function UserDetail() {
   }, []);
   useEffect(() => {
     if (me) {
-      fetchModel("/api/user/listfriend")
-        .then(data => {
-          setFriends(data || []);
-          if (userId) setIsFriend(data.some(f => f._id === userId)); 
-        });
-      fetchModel("/api/user/requests")
-        .then(data => {
-          setRequests(data || []);
-          if (userId) setRequested(data.some(r => r._id === userId)); 
-        });
+      fetchModel("/api/user/listfriend").then((data) => {
+        setFriends(data || []);
+        if (userId) setIsFriend(data.some((f) => f._id === userId));
+      });
+      fetchModel("/api/user/requests").then((data) => {
+        setRequests(data || []);
+        if (userId) setRequested(data.some((r) => r._id === userId));
+      });
     }
   }, [me, userId]);
-  
+
   if (loading) return <Typography>Loading user...</Typography>;
   if (!user) return <Typography>User not found.</Typography>;
 
@@ -79,35 +72,45 @@ function UserDetail() {
       alert("Update failed");
     }
   };
-const sendRequest = async () => {
-  const res = await fetchModel(`/api/user/request/${user._id}`, { method: "POST" });
-  alert(res.message);
-  setRequested(true);
-};
-const acceptRequest = async () => {
-  const res = await fetchModel(`/api/user/accept/${user._id}`, { method: "POST" });
-  alert(res.message);
-  setRequests(prev => prev.filter(r => r._id !== user._id));
-  setIsFriend(true);
-};
-const rejectRequest = async () => {
-  const res = await fetchModel(`/api/user/reject/${user._id}`, { method: "POST" });
-  alert(res.message);
-  setRequests(prev => prev.filter(r => r._id !== user._id));
-};
-const unfriend = async () => {
-  const res = await fetchModel(`/api/user/unfriend/${user._id}`, { method: "POST" });
-  if (res && res.message) {
+  const sendRequest = async () => {
+    const res = await fetchModel(`/api/user/request/${user._id}`, {
+      method: "POST",
+    });
     alert(res.message);
-    setIsFriend(false);
-    setFriends(prev => prev.filter(f => f._id.toString() !== user._id.toString()));
-  } else {
-    alert("Unfriend failed");
-  }
-};
+    setRequested(true);
+  };
+  const acceptRequest = async () => {
+    const res = await fetchModel(`/api/user/accept/${user._id}`, {
+      method: "POST",
+    });
+    alert(res.message);
+    setRequests((prev) => prev.filter((r) => r._id !== user._id));
+    setIsFriend(true);
+  };
+  const rejectRequest = async () => {
+    const res = await fetchModel(`/api/user/reject/${user._id}`, {
+      method: "POST",
+    });
+    alert(res.message);
+    setRequests((prev) => prev.filter((r) => r._id !== user._id));
+  };
+  const unfriend = async () => {
+    const res = await fetchModel(`/api/user/unfriend/${user._id}`, {
+      method: "POST",
+    });
+    if (res && res.message) {
+      alert(res.message);
+      setIsFriend(false);
+      setFriends((prev) =>
+        prev.filter((f) => f._id.toString() !== user._id.toString())
+      );
+    } else {
+      alert("Unfriend failed");
+    }
+  };
   return (
     <>
-    <Typography variant="h6">
+      <Typography variant="h6">
         {user.first_name} {user.last_name}
       </Typography>
       <Typography variant="body2">Location: {user.location}</Typography>
@@ -218,7 +221,6 @@ const unfriend = async () => {
     //     <Link to={`/photos/${user._id}`}>View Photos</Link>
     //   </Typography>
     // </>
-    
   );
 }
 
